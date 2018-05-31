@@ -1,0 +1,35 @@
+{
+  "name": "rx-game",
+  "version": "0.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "webpack-dev-server --port 9000 --inline --progress --profile --colors --watch --content-base src/ --open --mode development",
+    "build": "webpack --config webpack.config.js",
+    "build:prod": "webpack --config webpack.config.js -p"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sneas/rx-game.git"
+  },
+  "author": "Dima Snisarenko <snisarenkodima@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/sneas/rx-game/issues"
+  },
+  "homepage": "https://github.com/sneas/rx-game#readme",
+  "devDependencies": {
+    "@types/node": "^10.1.4",
+    "awesome-typescript-loader": "^5.0.0",
+    "source-map-loader": "^0.2.3",
+    "tslint": "^5.10.0",
+    "tslint-loader": "^3.6.0",
+    "typescript": "^2.9.1",
+    "webpack": "^4.10.2",
+    "webpack-cli": "2.1.4",
+    "webpack-dev-server": "^3.1.4"
+  },
+  "dependencies": {
+    "rxjs": "^6.2.0"
+  }
+}
