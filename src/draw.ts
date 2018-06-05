@@ -2,8 +2,8 @@ import { Pixel } from './types';
 
 const PIXEL_SIZE = 10;
 
-const SCENE_WIDTH = 80;
-const SCENE_HEIGHT = 60;
+export const SCENE_WIDTH = 80;
+export const SCENE_HEIGHT = 60;
 
 const CANVAS_WIDTH = SCENE_WIDTH * PIXEL_SIZE;
 const CANVAS_HEIGHT = SCENE_HEIGHT * PIXEL_SIZE;
