@@ -1,4 +1,4 @@
-import { clear, createCanvas, drawPixels } from './draw';
+import { clear, createCanvas, drawPixels, renderGameOver } from './draw';
 import { combineLatest, fromEvent, interval, Observable, of } from 'rxjs/index';
 import { clean, displace, generate, generateActor, isCollided } from './scene';
 import {
@@ -49,8 +49,13 @@ const obstacles$ = ticks$.pipe(
 
 combineLatest(actor$, obstacles$)
   .pipe(takeWhile(([actor, obstacles]) => !isCollided(actor, obstacles)))
-  .subscribe(([actor, obstacles]) => {
-    clear(ctx);
-    drawPixels(ctx, actor);
-    drawPixels(ctx, flatten(obstacles));
+  .subscribe({
+    next: ([actor, obstacles]) => {
+      clear(ctx);
+      drawPixels(ctx, actor);
+      drawPixels(ctx, flatten(obstacles));
+    },
+    complete: () => {
+      renderGameOver(ctx);
+    }
   });
