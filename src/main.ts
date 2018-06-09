@@ -1,4 +1,10 @@
-import { clear, createCanvas, drawPixels, renderGameOver } from './draw';
+import {
+  clear,
+  createCanvas,
+  drawPixels,
+  renderGameOver,
+  renderScores
+} from './draw';
 import { combineLatest, fromEvent, interval, Observable, of } from 'rxjs/index';
 import { clean, displace, generate, generateActor, isCollided } from './scene';
 import {
@@ -50,16 +56,23 @@ const obstacles$ = ticks$.pipe(
   )
 );
 
-const $game = combineLatest(actor$, obstacles$).pipe(
+const $scores = ticks$.pipe(
+  scan((total: number) => {
+    return total + 1;
+  }, 0)
+);
+
+const $game = combineLatest(actor$, obstacles$, $scores).pipe(
   takeWhile(([actor, obstacles]) => !isCollided(actor, obstacles))
 );
 
 const play = () =>
   $game.subscribe({
-    next: ([actor, obstacles]) => {
+    next: ([actor, obstacles, scores]) => {
       clear(ctx);
       drawPixels(ctx, actor);
       drawPixels(ctx, flatten(obstacles));
+      renderScores(ctx, scores);
     },
     complete: () => {
       renderGameOver(ctx);

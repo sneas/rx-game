@@ -36,12 +36,13 @@ export function drawText(
   x: number,
   y: number,
   size = 15,
+  textAlign = 'center',
   fillStyle = 'black',
   font = 'Arial'
 ) {
   ctx.fillStyle = fillStyle;
   ctx.font = `${size}px ${font}`;
-  ctx.textAlign = 'center';
+  ctx.textAlign = textAlign;
   ctx.textBaseline = 'middle';
   ctx.fillText(text, x, y);
 }
@@ -57,4 +58,9 @@ export function renderGameOver(ctx: CanvasRenderingContext2D) {
     CANVAS_HEIGHT / 2 + 20,
     10
   );
+}
+
+export function renderScores(ctx: CanvasRenderingContext2D, scores: number) {
+  drawText(ctx, 'Your scores', CANVAS_WIDTH - 20, 20, 10, 'right');
+  drawText(ctx, scores.toString(), CANVAS_WIDTH - 20, 35, 10, 'right');
 }
