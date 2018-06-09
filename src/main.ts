@@ -22,8 +22,11 @@ document.body.appendChild(canvas);
 
 const ticks$ = interval(50).pipe(share());
 
-const actor$: Observable<Pixel[]> = fromEvent(document, 'keyup').pipe(
-  filter(e => e['keyCode'] === 38),
+const keyUp$ = fromEvent(document, 'keyup').pipe(
+  filter(e => e['keyCode'] === 38)
+);
+
+const actor$: Observable<Pixel[]> = keyUp$.pipe(
   exhaustMap(() => {
     const max = 7;
     return of(...[...range(1, max + 1), ...range(max - 1, -1)]).pipe(
@@ -47,9 +50,12 @@ const obstacles$ = ticks$.pipe(
   )
 );
 
-combineLatest(actor$, obstacles$)
-  .pipe(takeWhile(([actor, obstacles]) => !isCollided(actor, obstacles)))
-  .subscribe({
+const $game = combineLatest(actor$, obstacles$).pipe(
+  takeWhile(([actor, obstacles]) => !isCollided(actor, obstacles))
+);
+
+const play = () =>
+  $game.subscribe({
     next: ([actor, obstacles]) => {
       clear(ctx);
       drawPixels(ctx, actor);
@@ -57,5 +63,11 @@ combineLatest(actor$, obstacles$)
     },
     complete: () => {
       renderGameOver(ctx);
+
+      keyUp$.pipe(take(1)).subscribe({
+        complete: play
+      });
     }
   });
+
+play();

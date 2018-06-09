@@ -30,11 +30,31 @@ export function drawPixels(ctx: CanvasRenderingContext2D, pixels: Pixel[]) {
   });
 }
 
+export function drawText(
+  ctx: CanvasRenderingContext2D,
+  text: string,
+  x: number,
+  y: number,
+  size = 15,
+  fillStyle = 'black',
+  font = 'Arial'
+) {
+  ctx.fillStyle = fillStyle;
+  ctx.font = `${size}px ${font}`;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText(text, x, y);
+}
+
 export function renderGameOver(ctx: CanvasRenderingContext2D) {
   clear(ctx);
 
-  ctx.fillStyle = 'black';
-  ctx.font = '15px Arial';
-  ctx.textAlign = 'center';
-  ctx.fillText('GAME OVER', CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2);
+  drawText(ctx, 'GAME OVER', CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2 - 20, 24);
+  drawText(
+    ctx,
+    'Press UP key to play again',
+    CANVAS_WIDTH / 2,
+    CANVAS_HEIGHT / 2 + 20,
+    10
+  );
 }
