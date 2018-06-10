@@ -16,15 +16,19 @@ import {
   startWith,
   take,
   scan,
-  takeWhile
+  takeWhile,
+  withLatestFrom
 } from 'rxjs/internal/operators';
 import { range, flatten } from 'lodash-es';
 import { Pixel } from './types';
+import { animationFrame } from 'rxjs/internal/scheduler/animationFrame';
 
 const canvas = createCanvas();
 const ctx = canvas.getContext('2d');
 
 document.body.appendChild(canvas);
+
+const FPS = 60;
 
 const ticks$ = interval(50).pipe(share());
 
@@ -62,7 +66,10 @@ const $scores = ticks$.pipe(
   }, 0)
 );
 
-const $game = combineLatest(actor$, obstacles$, $scores).pipe(
+const scene$ = combineLatest(actor$, obstacles$, $scores);
+
+const $game = interval(1000 / FPS, animationFrame).pipe(
+  withLatestFrom(scene$, (_, scene) => scene),
   takeWhile(([actor, obstacles]) => !isCollided(actor, obstacles))
 );
 
