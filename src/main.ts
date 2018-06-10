@@ -1,6 +1,7 @@
 import {
   clear,
   createCanvas,
+  drawGround,
   drawPixels,
   renderGameOver,
   renderScores
@@ -79,6 +80,7 @@ const play = () =>
       clear(ctx);
       drawPixels(ctx, actor);
       drawPixels(ctx, flatten(obstacles));
+      drawGround(ctx);
       renderScores(ctx, scores);
     },
     complete: () => {

@@ -1,4 +1,5 @@
 import { Pixel } from './types';
+import { GROUND_HEIGHT } from './scene';
 
 const PIXEL_SIZE = 10;
 
@@ -17,13 +18,13 @@ export function createCanvas() {
 }
 
 export function clear(ctx) {
-  ctx.fillStyle = '#fff';
+  ctx.fillStyle = '#d0f7ff';
   ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
 }
 
 export function drawPixels(ctx: CanvasRenderingContext2D, pixels: Pixel[]) {
   pixels.forEach(pixel => {
-    ctx.fillStyle = 'black';
+    ctx.fillStyle = pixel.color;
     const x = pixel.x * PIXEL_SIZE;
     const y = CANVAS_HEIGHT - (pixel.y + 1) * PIXEL_SIZE;
     ctx.fillRect(x, y, PIXEL_SIZE, PIXEL_SIZE);
@@ -63,4 +64,14 @@ export function renderGameOver(ctx: CanvasRenderingContext2D) {
 export function renderScores(ctx: CanvasRenderingContext2D, scores: number) {
   drawText(ctx, 'Your scores', CANVAS_WIDTH - 20, 20, 10, 'right');
   drawText(ctx, scores.toString(), CANVAS_WIDTH - 20, 35, 10, 'right');
+}
+
+export function drawGround(ctx: CanvasRenderingContext2D) {
+  ctx.fillStyle = '#9c6000';
+  ctx.fillRect(
+    0,
+    CANVAS_HEIGHT - GROUND_HEIGHT * PIXEL_SIZE,
+    CANVAS_WIDTH,
+    CANVAS_HEIGHT
+  );
 }
