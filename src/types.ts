@@ -3,3 +3,9 @@ export type Pixel = {
   y: number;
   color: string;
 };
+
+export type Scene = {
+  actor: Pixel[];
+  obstacles: Pixel[][];
+  scores: number;
+};

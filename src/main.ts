@@ -6,7 +6,14 @@ import {
   renderGameOver,
   renderScores
 } from './draw';
-import { combineLatest, fromEvent, interval, Observable, of } from 'rxjs/index';
+import {
+  combineLatest,
+  fromEvent,
+  interval,
+  Observable,
+  of,
+  Subject
+} from 'rxjs/index';
 import { clean, displace, generate, generateActor, isCollided } from './scene';
 import {
   concatMap,
@@ -18,10 +25,11 @@ import {
   take,
   scan,
   takeWhile,
-  withLatestFrom
+  withLatestFrom,
+  tap
 } from 'rxjs/internal/operators';
 import { range, flatten } from 'lodash-es';
-import { Pixel } from './types';
+import { Pixel, Scene } from './types';
 import { animationFrame } from 'rxjs/internal/scheduler/animationFrame';
 
 const canvas = createCanvas();
@@ -67,29 +75,47 @@ const $scores = ticks$.pipe(
   }, 0)
 );
 
-const scene$ = combineLatest(actor$, obstacles$, $scores);
+const scene$: Observable<Scene> = combineLatest(
+  actor$,
+  obstacles$,
+  $scores
+).pipe(
+  map(([actor, obstacles, scores]) => ({
+    actor,
+    obstacles,
+    scores
+  }))
+);
 
 const $game = interval(1000 / FPS, animationFrame).pipe(
   withLatestFrom(scene$, (_, scene) => scene),
-  takeWhile(([actor, obstacles]) => !isCollided(actor, obstacles))
+  takeWhile(scene => !isCollided(scene.actor, scene.obstacles))
 );
 
-const play = () =>
-  $game.subscribe({
-    next: ([actor, obstacles, scores]) => {
-      clear(ctx);
-      drawPixels(ctx, actor);
-      drawPixels(ctx, flatten(obstacles));
-      drawGround(ctx);
-      renderScores(ctx, scores);
-    },
-    complete: () => {
-      renderGameOver(ctx);
+const play = () => {
+  let finalScore = 0;
+  $game
+    .pipe(
+      tap(scene => {
+        finalScore = scene.scores;
+      })
+    )
+    .subscribe({
+      next: scene => {
+        clear(ctx);
+        drawPixels(ctx, scene.actor);
+        drawPixels(ctx, flatten(scene.obstacles));
+        drawGround(ctx);
+        renderScores(ctx, scene.scores);
+      },
+      complete: () => {
+        renderGameOver(ctx, finalScore);
 
-      keyUp$.pipe(take(1)).subscribe({
-        complete: play
-      });
-    }
-  });
+        keyUp$.pipe(take(1)).subscribe({
+          complete: play
+        });
+      }
+    });
+};
 
 play();

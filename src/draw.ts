@@ -48,10 +48,19 @@ export function drawText(
   ctx.fillText(text, x, y);
 }
 
-export function renderGameOver(ctx: CanvasRenderingContext2D) {
+export function renderGameOver(ctx: CanvasRenderingContext2D, score: number) {
   clear(ctx);
 
-  drawText(ctx, 'GAME OVER', CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2 - 20, 24);
+  drawText(ctx, 'GAME OVER', CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2 - 45, 24);
+  drawText(
+    ctx,
+    score.toString(),
+    CANVAS_WIDTH / 2,
+    CANVAS_HEIGHT / 2 - 10,
+    48,
+    'center',
+    '#d28f07'
+  );
   drawText(
     ctx,
     'Press UP key to play again',
