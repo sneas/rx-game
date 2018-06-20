@@ -5,6 +5,7 @@ import { last, random } from 'lodash-es';
 export const MIN_DISTANCE_BETWEEN_OBSTACLES = 15;
 export const GROUND_HEIGHT = 1;
 export const MAX_OBSTACLE_HEIGHT = 5;
+export const MAX_JUMP = 7;
 
 export function generateActor(displace = 0): Pixel[] {
   return [
@@ -30,7 +31,14 @@ export function generateObstacle(): Pixel[] {
   );
 }
 
-export function displace(obstacles: Pixel[][]): Pixel[][] {
+export function displaceActor(actor: Pixel[], displace: number) {
+  return actor.map(pixel => ({
+    ...pixel,
+    y: pixel.y + displace
+  }));
+}
+
+export function displaceObstacles(obstacles: Pixel[][]): Pixel[][] {
   return obstacles.map(obstacle =>
     obstacle.map(pixel => ({ ...pixel, x: pixel.x - 1 }))
   );

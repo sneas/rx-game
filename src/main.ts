@@ -12,9 +12,18 @@ import {
   interval,
   Observable,
   of,
-  Subject
+  Subject,
+  zip
 } from 'rxjs/index';
-import { clean, displace, generate, generateActor, isCollided } from './scene';
+import {
+  clean,
+  displaceActor,
+  displaceObstacles,
+  generate,
+  generateActor,
+  isCollided,
+  MAX_JUMP
+} from './scene';
 import {
   concatMap,
   exhaustMap,
@@ -41,29 +50,29 @@ const FPS = 60;
 
 const ticks$ = interval(50).pipe(share());
 
-const keyUp$ = fromEvent(document, 'keyup').pipe(
+const keyDown$ = fromEvent(document, 'keydown').pipe(
   filter(e => e['keyCode'] === 38)
 );
 
-const actor$: Observable<Pixel[]> = keyUp$.pipe(
-  exhaustMap(() => {
-    const max = 7;
-    return of(...[...range(1, max + 1), ...range(max - 1, -1)]).pipe(
-      concatMap(displace => {
-        return ticks$.pipe(
-          take(1),
-          map(() => generateActor(displace))
-        );
-      })
-    );
-  }),
+const jump$ = zip(
+  of(...new Array(MAX_JUMP).fill(1), ...new Array(MAX_JUMP).fill(-1)),
+  ticks$
+).pipe(
+  map(([displace]) => displace),
+  scan((actor: Pixel[], displace: number) => {
+    return displaceActor(actor, displace);
+  }, generateActor())
+);
+
+const actor$: Observable<Pixel[]> = keyDown$.pipe(
+  exhaustMap(() => jump$),
   startWith(generateActor())
 );
 
 const obstacles$ = ticks$.pipe(
   scan(
     (obstacles: Pixel[][], _: number) => {
-      return generate(clean(displace(obstacles)));
+      return generate(clean(displaceObstacles(obstacles)));
     },
     <Pixel[][]>[]
   )
@@ -111,7 +120,7 @@ const play = () => {
       complete: () => {
         renderGameOver(ctx, finalScore);
 
-        keyUp$.pipe(take(1)).subscribe({
+        keyDown$.pipe(take(1)).subscribe({
           complete: play
         });
       }
