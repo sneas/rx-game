@@ -7,11 +7,11 @@ export const GROUND_HEIGHT = 1;
 export const MAX_OBSTACLE_HEIGHT = 5;
 export const MAX_JUMP = 7;
 
-export function generateActor(displace = 0): Pixel[] {
+export function generateActor(): Pixel[] {
   return [
-    { x: 2, y: 0 + GROUND_HEIGHT + displace, color: '#00007d' },
-    { x: 2, y: 1 + GROUND_HEIGHT + displace, color: '#00007d' },
-    { x: 2, y: 2 + GROUND_HEIGHT + displace, color: '#000000' }
+    { x: 2, y: 0 + GROUND_HEIGHT, color: '#00007d' },
+    { x: 2, y: 1 + GROUND_HEIGHT, color: '#00007d' },
+    { x: 2, y: 2 + GROUND_HEIGHT, color: '#000000' }
   ];
 }
 
