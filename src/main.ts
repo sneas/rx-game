@@ -1,7 +1,7 @@
 import { clear, createCanvas, drawPixels } from "./draw";
 import { fromEvent, interval, of, zip } from "rxjs";
 import { Pixel } from "./types";
-import { exhaustMap, filter, map, scan } from "rxjs/operators";
+import { exhaustMap, filter, map, scan, startWith } from "rxjs/operators";
 import { fromArray } from "rxjs/internal/observable/fromArray";
 
 const canvas = createCanvas();
@@ -28,7 +28,12 @@ fromEvent(document, "keydown")
           ]
         )
       );
-    })
+    }),
+    startWith([
+      { x: 2, y: 0, color: "black" },
+      { x: 2, y: 1, color: "green" },
+      { x: 2, y: 2, color: "blue" }
+    ])
   )
   .subscribe(pixels => {
     clear(ctx); // Fills the entire scene with blue rectangle
