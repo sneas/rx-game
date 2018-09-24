@@ -12,9 +12,8 @@ import {
   interval,
   Observable,
   of,
-  Subject,
   zip
-} from 'rxjs/index';
+} from 'rxjs';
 import {
   clean,
   displaceActor,
@@ -25,7 +24,6 @@ import {
   MAX_JUMP
 } from './scene';
 import {
-  concatMap,
   exhaustMap,
   filter,
   map,
@@ -36,10 +34,10 @@ import {
   takeWhile,
   withLatestFrom,
   tap
-} from 'rxjs/internal/operators';
-import { range, flatten } from 'lodash-es';
+} from 'rxjs/operators';
+import { flatten } from 'lodash-es';
 import { Pixel, Scene } from './types';
-import { animationFrame } from 'rxjs/internal/scheduler/animationFrame';
+import { animationFrameScheduler } from 'rxjs';
 
 const canvas = createCanvas();
 const ctx = canvas.getContext('2d');
@@ -78,7 +76,7 @@ const obstacles$ = ticks$.pipe(
   )
 );
 
-const $scores = ticks$.pipe(
+const scores$ = ticks$.pipe(
   scan((total: number) => {
     return total + 1;
   }, 0)
@@ -87,7 +85,7 @@ const $scores = ticks$.pipe(
 const scene$: Observable<Scene> = combineLatest(
   actor$,
   obstacles$,
-  $scores
+  scores$
 ).pipe(
   map(([actor, obstacles, scores]) => ({
     actor,
@@ -96,14 +94,14 @@ const scene$: Observable<Scene> = combineLatest(
   }))
 );
 
-const $game = interval(1000 / FPS, animationFrame).pipe(
+const game$ = interval(1000 / FPS, animationFrameScheduler).pipe(
   withLatestFrom(scene$, (_, scene) => scene),
   takeWhile(scene => !isCollided(scene.actor, scene.obstacles))
 );
 
 const play = () => {
   let finalScore = 0;
-  $game
+  game$
     .pipe(
       tap(scene => {
         finalScore = scene.scores;
