@@ -1,6 +1,6 @@
-import { Pixel } from './types';
-import { SCENE_WIDTH } from './draw';
-import { last, random } from 'lodash-es';
+import { Pixel } from "./types";
+import { SCENE_WIDTH } from "./draw";
+import { last, random } from "lodash-es";
 
 export const MIN_DISTANCE_BETWEEN_OBSTACLES = 15;
 export const GROUND_HEIGHT = 1;
@@ -9,13 +9,13 @@ export const MAX_JUMP = 7;
 
 export function generateActor(): Pixel[] {
   return [
-    { x: 2, y: 0 + GROUND_HEIGHT, color: '#00007d' },
-    { x: 2, y: 1 + GROUND_HEIGHT, color: '#00007d' },
-    { x: 2, y: 2 + GROUND_HEIGHT, color: '#000000' }
+    { x: 2, y: 0 + GROUND_HEIGHT, color: "#00007d" },
+    { x: 2, y: 1 + GROUND_HEIGHT, color: "#00007d" },
+    { x: 2, y: 2 + GROUND_HEIGHT, color: "#000000" }
   ];
 }
 
-const availableObstacleColors = ['#018500', '#014c00', '#6ba62b'];
+const availableObstacleColors = ["#018500", "#014c00", "#6ba62b"];
 
 function generateObstacleColor(): string {
   return availableObstacleColors[random(availableObstacleColors.length - 1)];
