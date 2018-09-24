@@ -22,6 +22,6 @@ fromEvent(document, "keydown")
     )
   )
   .subscribe(pixels => {
-    clear(ctx);
+    clear(ctx); // Fills the entire scene with blue rectangle
     drawPixels(ctx, pixels);
   });
