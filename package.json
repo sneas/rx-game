@@ -19,19 +19,19 @@
   },
   "homepage": "https://github.com/sneas/rx-game#readme",
   "devDependencies": {
-    "@types/node": "^10.1.4",
-    "@types/lodash-es": "4.17.0",
-    "awesome-typescript-loader": "^5.0.0",
-    "source-map-loader": "^0.2.3",
-    "tslint": "^5.10.0",
+    "@types/node": "^10.10.3",
+    "@types/lodash-es": "^4.17.1",
+    "awesome-typescript-loader": "^5.2.1",
+    "source-map-loader": "^0.2.4",
+    "tslint": "^5.11.0",
     "tslint-loader": "^3.6.0",
-    "typescript": "^2.9.1",
-    "webpack": "^4.10.2",
-    "webpack-cli": "2.1.4",
-    "webpack-dev-server": "^3.1.4"
+    "typescript": "^3.0.3",
+    "webpack": "^4.19.1",
+    "webpack-cli": "^3.1.1",
+    "webpack-dev-server": "^3.1.8"
   },
   "dependencies": {
-    "lodash-es": "4.17.10",
-    "rxjs": "^6.2.0"
+    "lodash-es": "^4.17.11",
+    "rxjs": "^6.3.2"
   }
 }
