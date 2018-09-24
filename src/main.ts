@@ -1,8 +1,9 @@
 import { clear, createCanvas, drawPixels } from "./draw";
-import { fromEvent, interval, of } from "rxjs";
+import { fromEvent, interval, of, zip } from "rxjs";
 import { Pixel } from "./types";
-import { filter, scan, startWith } from "rxjs/operators";
+import { filter, map, scan, startWith } from "rxjs/operators";
 import { clean } from "./scene";
+import { fromArray } from "rxjs/internal/observable/fromArray";
 
 const canvas = createCanvas();
 const ctx = canvas.getContext("2d");
@@ -14,11 +15,13 @@ fromEvent(document, "keydown")
     console.log(event);
   });
 
-interval(50)
+zip(fromArray([1, 1, 1, 1, 1, 1, -1, -1, -1, -1, -1, -1]), interval(50))
   .pipe(
+    map(([displace]) => displace),
     scan(
-      (pixels: Pixel[], _: number) =>
-        pixels.map(pixel => ({ ...pixel, y: pixel.y + 1 })),
+      (pixels: Pixel[], displace: number) => {
+        return pixels.map(pixel => ({ ...pixel, y: pixel.y + displace }));
+      },
       [
         { x: 2, y: 0, color: "black" },
         { x: 2, y: 1, color: "green" },
