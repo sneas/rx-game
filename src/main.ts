@@ -14,21 +14,23 @@ const STILL = [
   { x: 2, y: 2, color: "blue" }
 ];
 
-fromEvent(document, "keydown")
-  .pipe(
+combineLatest(
+  of(STILL),
+  fromEvent(document, "keydown").pipe(
     filter(e => e["keyCode"] === 38),
     exhaustMap(() => {
       return zip(
-        fromArray([1, 1, 1, 1, 1, 1, -1, -1, -1, -1, -1, -1]),
+        fromArray([1, 2, 3, 4, 5, 5, 4, 3, 2, 1, 0]),
         interval(50)
-      ).pipe(
-        map(([displace]) => displace),
-        scan((pixels: Pixel[], displace: number) => {
-          return pixels.map(pixel => ({ ...pixel, y: pixel.y + displace }));
-        }, STILL)
-      );
+      ).pipe(map(([displace]) => displace));
     }),
-    startWith(STILL)
+    startWith(0)
+  )
+)
+  .pipe(
+    map(([pixels, displace]) =>
+      pixels.map(pixel => ({ ...pixel, y: pixel.y + displace }))
+    )
   )
   .subscribe(pixels => {
     clear(ctx); // Fills the entire scene with blue rectangle
