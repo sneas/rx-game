@@ -15,6 +15,10 @@ export function generateActor(): Pixel[] {
   ];
 }
 
+export function generateJump(): number[] {
+  return [...new Array(MAX_JUMP).fill(1), ...new Array(MAX_JUMP).fill(-1)];
+}
+
 const availableObstacleColors = ["#018500", "#014c00", "#6ba62b"];
 
 function generateObstacleColor(): string {
