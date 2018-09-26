@@ -14,7 +14,6 @@ import {
   scan,
   share,
   startWith,
-  take,
   takeWhile
 } from "rxjs/operators";
 import { fromArray } from "rxjs/internal/observable/fromArray";
@@ -36,9 +35,7 @@ const STILL = generateActor();
 
 const ticks$ = interval(50).pipe(share());
 
-const keyUp$ = fromEvent(document, "keydown");
-
-const actor$ = keyUp$.pipe(
+const actor$ = fromEvent(document, "keydown").pipe(
   filter(e => e["keyCode"] === 38),
   exhaustMap(() => {
     return zip(fromArray(generateJump()), ticks$).pipe(
@@ -65,28 +62,17 @@ const scores$ = ticks$.pipe(
   startWith(0)
 );
 
-const game$ = combineLatest(actor$, obstacles$, scores$).pipe(
-  takeWhile(([actor, obstacles]) => !isCollided(actor, obstacles))
-);
-
-function play() {
-  game$.subscribe({
-    next: ([actor, obstacles, score]) => {
+combineLatest(actor$, obstacles$, scores$)
+  .pipe(takeWhile(([actor, obstacles]) => !isCollided(actor, obstacles)))
+  .subscribe({
+    next: ([actor, obstacles, scores]) => {
       clear(ctx); // Fills the entire scene with blue rectangle
       drawPixels(ctx, actor);
       drawPixels(ctx, flatten(obstacles));
-      renderScores(ctx, score);
+      renderScores(ctx, scores);
       drawGround(ctx);
     },
     complete: () => {
       console.log("Game over");
-      keyUp$.pipe(take(1)).subscribe({
-        complete: () => {
-          play();
-        }
-      });
     }
   });
-}
-
-play();
