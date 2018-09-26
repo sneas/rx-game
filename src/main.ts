@@ -1,4 +1,4 @@
-import { clear, createCanvas, drawPixels } from "./draw";
+import { clear, createCanvas, drawGround, drawPixels } from "./draw";
 import { combineLatest, fromEvent, interval, of, zip } from "rxjs";
 import { Pixel } from "./types";
 import {
@@ -53,4 +53,5 @@ combineLatest(actor$, obstacles$).subscribe(([actor, obstacles]) => {
   clear(ctx); // Fills the entire scene with blue rectangle
   drawPixels(ctx, actor);
   drawPixels(ctx, flatten(obstacles));
+  drawGround(ctx);
 });
