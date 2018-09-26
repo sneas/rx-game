@@ -7,7 +7,8 @@ import {
   map,
   scan,
   share,
-  startWith
+  startWith,
+  takeWhile
 } from "rxjs/operators";
 import { fromArray } from "rxjs/internal/observable/fromArray";
 import {
@@ -15,7 +16,8 @@ import {
   displaceObstacles,
   generate,
   generateActor,
-  generateJump
+  generateJump,
+  isCollided
 } from "./scene";
 import { flatten } from "lodash-es";
 
@@ -49,9 +51,16 @@ const obstacles$ = ticks$.pipe(
   )
 );
 
-combineLatest(actor$, obstacles$).subscribe(([actor, obstacles]) => {
-  clear(ctx); // Fills the entire scene with blue rectangle
-  drawPixels(ctx, actor);
-  drawPixels(ctx, flatten(obstacles));
-  drawGround(ctx);
-});
+combineLatest(actor$, obstacles$)
+  .pipe(takeWhile(([actor, obstacles]) => !isCollided(actor, obstacles)))
+  .subscribe({
+    next: ([actor, obstacles]) => {
+      clear(ctx); // Fills the entire scene with blue rectangle
+      drawPixels(ctx, actor);
+      drawPixels(ctx, flatten(obstacles));
+      drawGround(ctx);
+    },
+    complete: () => {
+      console.log("Game over");
+    }
+  });
