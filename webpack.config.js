@@ -25,12 +25,6 @@ module.exports = {
         use: "source-map-loader"
       },
       {
-        enforce: "pre",
-        test: /\.ts$/,
-        exclude: /node_modules/,
-        use: "tslint-loader"
-      },
-      {
         test: /\.ts$/,
         exclude: [/node_modules/],
         use: "awesome-typescript-loader"
