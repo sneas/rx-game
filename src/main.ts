@@ -6,7 +6,13 @@ import {
   renderGameOver,
   renderScores
 } from "./draw";
-import { combineLatest, fromEvent, interval, of, zip } from "rxjs";
+import {
+  animationFrameScheduler,
+  combineLatest,
+  fromEvent,
+  interval,
+  zip
+} from "rxjs";
 import { Pixel } from "./types";
 import {
   exhaustMap,
@@ -16,7 +22,8 @@ import {
   share,
   startWith,
   take,
-  takeWhile
+  takeWhile,
+  withLatestFrom
 } from "rxjs/operators";
 import { fromArray } from "rxjs/internal/observable/fromArray";
 import {
@@ -67,7 +74,13 @@ const scores$ = ticks$.pipe(
   startWith(0)
 );
 
-const game$ = combineLatest(actor$, obstacles$, scores$).pipe(
+const scene$ = combineLatest(actor$, obstacles$, scores$);
+
+const FPS = 60;
+const fps$ = interval(1000 / FPS, animationFrameScheduler);
+
+const game$ = fps$.pipe(
+  withLatestFrom(scene$, (_, scene) => scene),
   takeWhile(([actor, obstacles]) => !isCollided(actor, obstacles))
 );
 
