@@ -36,10 +36,11 @@ const STILL = generateActor();
 
 const ticks$ = interval(50).pipe(share());
 
-const keyUp$ = fromEvent(document, "keydown");
+const up$ = fromEvent(document, "keydown").pipe(
+  filter(e => e["keyCode"] === 38)
+);
 
-const actor$ = keyUp$.pipe(
-  filter(e => e["keyCode"] === 38),
+const actor$ = up$.pipe(
   exhaustMap(() => {
     return zip(fromArray(generateJump()), ticks$).pipe(
       map(([displace]) => displace),
@@ -80,7 +81,7 @@ function play() {
     },
     complete: () => {
       console.log("Game over");
-      keyUp$.pipe(take(1)).subscribe({
+      up$.pipe(take(1)).subscribe({
         complete: () => {
           play();
         }
