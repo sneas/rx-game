@@ -3,6 +3,7 @@ import {
   createCanvas,
   drawGround,
   drawPixels,
+  renderGameOver,
   renderScores
 } from "./draw";
 import { combineLatest, fromEvent, interval, of, zip } from "rxjs";
@@ -70,8 +71,10 @@ const game$ = combineLatest(actor$, obstacles$, scores$).pipe(
 );
 
 function play() {
+  let finalScore = 0;
   game$.subscribe({
     next: ([actor, obstacles, score]) => {
+      finalScore = score;
       clear(ctx); // Fills the entire scene with blue rectangle
       drawPixels(ctx, actor);
       drawPixels(ctx, flatten(obstacles));
@@ -79,7 +82,7 @@ function play() {
       drawGround(ctx);
     },
     complete: () => {
-      console.log("Game over");
+      renderGameOver(ctx, finalScore);
       keyUp$.pipe(take(1)).subscribe({
         complete: () => {
           play();
