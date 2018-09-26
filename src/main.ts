@@ -1,4 +1,10 @@
-import { clear, createCanvas, drawGround, drawPixels } from "./draw";
+import {
+  clear,
+  createCanvas,
+  drawGround,
+  drawPixels,
+  renderScores
+} from "./draw";
 import { combineLatest, fromEvent, interval, of, zip } from "rxjs";
 import { Pixel } from "./types";
 import {
@@ -51,13 +57,19 @@ const obstacles$ = ticks$.pipe(
   )
 );
 
-combineLatest(actor$, obstacles$)
+const scores$ = ticks$.pipe(
+  scan(total => total + 1, 0),
+  startWith(0)
+);
+
+combineLatest(actor$, obstacles$, scores$)
   .pipe(takeWhile(([actor, obstacles]) => !isCollided(actor, obstacles)))
   .subscribe({
-    next: ([actor, obstacles]) => {
+    next: ([actor, obstacles, scores]) => {
       clear(ctx); // Fills the entire scene with blue rectangle
       drawPixels(ctx, actor);
       drawPixels(ctx, flatten(obstacles));
+      renderScores(ctx, scores);
       drawGround(ctx);
     },
     complete: () => {
